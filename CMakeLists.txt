@@ -12,3 +12,7 @@ add_executable("md-keygen"
 )
 
 target_link_libraries(md-keygen PRIVATE ${MONOCYPHER_LIB})
+
+add_executable("md-keytoarr"
+    src/pk-arr.cpp
+)

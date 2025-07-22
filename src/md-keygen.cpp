@@ -4,6 +4,7 @@
 #include <iostream>
 #include <monocypher.h>
 #include <string>
+
 int main(int argc, char **argv) {
 	bool overwriteFlag = false;
 	bool printKeys = false;
@@ -17,7 +18,7 @@ int main(int argc, char **argv) {
 		if (strcmp(argv[i], "--overwrite") == 0) { overwriteFlag = true; }
 
 		if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
-			std::cout << "Midnight's Dumb Keygen Tool version 0.1\n";
+			std::cout << "md-keygen version 0.1\n";
 			return 0;
 		}
 		if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
