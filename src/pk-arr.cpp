@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
@@ -8,16 +9,16 @@
 int main(int argc, char **argv) {
 	if (argc < 2) {
 		std::cerr << "Invalid arguments\n";
-		return -1;
+		return EXIT_FAILURE;
 	}
 	std::string path = argv[1];
 	if (!std::filesystem::exists(path)) {
 		std::cerr << "File " << path << " does not exist\n";
-		return -1;
+		return EXIT_FAILURE;
 	}
 	if (!std::filesystem::is_regular_file(path)) {
 		std::cerr << path << " is not a file\n";
-		return -1;
+		return EXIT_FAILURE;
 	}
 
 	std::string outFile;
@@ -26,11 +27,11 @@ int main(int argc, char **argv) {
 		if (strcmp(argv[2], ">") == 0) { outFile = argv[3]; }
 		if (!std::filesystem::exists(outFile)) {
 			std::cerr << "File " << outFile << " does not exist\n";
-			return -1;
+			return EXIT_FAILURE;
 		}
 		if (!std::filesystem::is_regular_file(outFile)) {
 			std::cerr << outFile << " is not a file\n";
-			return -1;
+			return EXIT_FAILURE;
 		}
 	}
 
@@ -43,7 +44,7 @@ int main(int argc, char **argv) {
 					  << "The following sequence may be used to write the array directly to a file [key] > [out]\n"
 					  << "The name of the array may be changed with --ver [name]\n";
 		}
-        if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
+		if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
 			std::cout << "md-keytoarr version 0.1\n";
 		}
 	}
@@ -64,7 +65,8 @@ int main(int argc, char **argv) {
 		}
 
 		std::cout << "\n};\n";
-		return 0;
+		delete[] key;
+		return EXIT_SUCCESS;
 	} else {
 		std::ofstream hdr(outFile, std::ios::ate);
 		hdr << "static const uint8_t " << varName << "[" << fileSz << "] = {";
@@ -75,6 +77,10 @@ int main(int argc, char **argv) {
 		}
 
 		hdr << "\n};\n";
-		return 0;
+		delete[] key;
+		return EXIT_SUCCESS;
 	}
+
+	delete[] key;
+	return EXIT_FAILURE;
 }

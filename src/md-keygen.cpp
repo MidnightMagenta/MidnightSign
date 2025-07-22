@@ -11,28 +11,31 @@ int main(int argc, char **argv) {
 	std::string outPathPk;
 	std::string outPathSk;
 
-	for (size_t i = 0; i < argc; i++) {
+	for (size_t i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "-pk") == 0) { outPathPk = std::string(argv[++i]); }
-		if (strcmp(argv[i], "-sk") == 0) { outPathSk = std::string(argv[++i]); }
-		if (strcmp(argv[i], "--print") == 0) { printKeys = true; }
-		if (strcmp(argv[i], "--overwrite") == 0) { overwriteFlag = true; }
+		else if (strcmp(argv[i], "-sk") == 0) { outPathSk = std::string(argv[++i]); }
+		else if (strcmp(argv[i], "--print") == 0) { printKeys = true; }
+		else if (strcmp(argv[i], "--overwrite") == 0) { overwriteFlag = true; }
 
-		if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
+		else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
 			std::cout << "md-keygen version 0.1\n";
-			return 0;
+			return EXIT_SUCCESS;
 		}
-		if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+		else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
 			std::cout << "To specify the private key output file, use -pk [path]\n"
 					  << "To specify the secret key output file use -sk [path]\n"
 					  << "If the files are being overwritten, use --overwrite\n"
 					  << "Use --print to print the keys to the terminal during generation\n";
-			return 0;
+			return EXIT_SUCCESS;
+		} else {
+			std::cout << "Unknown argument: " << argv[i] << "\n";
+			return EXIT_FAILURE;
 		}
 	}
 
 	if (outPathPk.empty() || outPathSk.empty()) {
 		std::cout << "No output path specified\n";
-		return -1;
+		return EXIT_FAILURE;
 	}
 
 	uint8_t seed[32];
@@ -56,6 +59,7 @@ int main(int argc, char **argv) {
 	if (std::filesystem::exists(outPathPk)) {
 		if (!overwriteFlag) {
 			std::cout << outPathPk << " already exists. Use --overwrite if you want to overwrite the file.\n";
+			crypto_wipe(sk, 64);
 			return -1;
 		}
 		std::cout << "Overwriting " << outPathPk << "\n";
@@ -64,7 +68,8 @@ int main(int argc, char **argv) {
 	if (std::filesystem::exists(outPathSk)) {
 		if (!overwriteFlag) {
 			std::cout << outPathSk << " already exists. Use --overwrite if you want to overwrite the file.\n";
-			return -1;
+			crypto_wipe(sk, 64);
+			return EXIT_FAILURE;
 		}
 		std::cout << "Overwriting " << outPathSk << "\n";
 		std::filesystem::remove(outPathSk);
@@ -74,5 +79,7 @@ int main(int argc, char **argv) {
 	std::ofstream skOut(outPathSk, std::ios::binary);
 	pkOut.write((char *) pk, 32);
 	skOut.write((char *) sk, 64);
-	return 0;
+
+	crypto_wipe(sk, 64);
+	return EXIT_SUCCESS;
 }
