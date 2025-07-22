@@ -7,6 +7,34 @@
 #include <string>
 
 int main(int argc, char **argv) {
+	std::string varName = "arr";
+	for (int i = 0; i < argc; i++) {
+		if (strcmp(argv[i], "--var") == 0) {
+			varName = argv[++i];
+		} else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+			std::cout << std::left << std::setw(20) << "[bin] > [out]"
+					  << "May be used to write the generated array directly into a file\n";
+			std::cout << std::left << std::setw(20) << ""
+					  << "The input file must be the first parameter passed to the program.\n";
+
+			std::cout << std::left << std::setw(20) << "-ver [name]"
+					  << "Specifies the name of the generated array.\n"
+					  << std::setw(20) << ""
+					  << "If this argument is not specified, the "
+						 "array will be named \"arr\"\n";
+
+			std::cout << std::left << std::setw(20) << "-v or --version"
+					  << "Prints the current version of the program\n";
+			std::cout << std::left << std::setw(20) << "-h or --help"
+					  << "Shows this help message\n";
+			std::cout << "\nExample usage: md-keytoarr data.bin > array.h -ver binary_data\n\n";
+			return EXIT_SUCCESS;
+		} else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
+			std::cout << "md-keytoarr version 0.1\n";
+			return EXIT_SUCCESS;
+		}
+	}
+
 	if (argc < 2) {
 		std::cerr << "Invalid arguments\n";
 		return EXIT_FAILURE;
@@ -32,20 +60,6 @@ int main(int argc, char **argv) {
 		if (!std::filesystem::is_regular_file(outFile)) {
 			std::cerr << outFile << " is not a file\n";
 			return EXIT_FAILURE;
-		}
-	}
-
-	std::string varName = "arr";
-	for (int i = 0; i < argc; i++) {
-		if (strcmp(argv[i], "--var") == 0) { varName = argv[++i]; }
-		if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
-			std::cout << "md-keytoarr converts a binary file into a C style array of bytes. The first argument must be "
-						 "the path to the binary data.\n"
-					  << "The following sequence may be used to write the array directly to a file [key] > [out]\n"
-					  << "The name of the array may be changed with --ver [name]\n";
-		}
-		if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
-			std::cout << "md-keytoarr version 0.1\n";
 		}
 	}
 

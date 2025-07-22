@@ -100,8 +100,19 @@ int main(int argc, char **argv) {
 		} else if (strcmp(argv[i], "-f") == 0) {
 			filePath = argv[++i];
 		} else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
-			std::cout << "Use -k [path] to specify the path to a binary file containing the private key\n"
-					  << "Use -f [path] to specify the path to the file you want to sign\n";
+			std::cout << std::left << std::setw(20) << "-k [path]"
+					  << "Specifies the path to a file containing the public key\n";
+			std::cout << std::left << std::setw(20) << "-f [path]"
+					  << "Specifies the path to a file to be signed\n";
+
+			std::cout << "\nA -k and -f parameter must be passed in order for the program to be able to verify the "
+						 "signatures\n\n";
+
+			std::cout << std::left << std::setw(20) << "-v or --version"
+					  << "Prints the current version of the program\n";
+			std::cout << std::left << std::setw(20) << "-h or --help"
+					  << "Shows this help message\n";
+			std::cout << "\nExample usage: md-verify -k public.key -f executable.elf\n\n";
 			return EXIT_SUCCESS;
 		} else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
 			std::cout << "md-verify version 0.1\n";
