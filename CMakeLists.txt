@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(ProjectName "MD-Sign")
+set(CMAKE_INSTALL_PREFIX /usr/local)
 find_library(MONOCYPHER_LIB monocypher)
 
 add_executable("md-keygen" 
