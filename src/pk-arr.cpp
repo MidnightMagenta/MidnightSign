@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 			std::cout << std::left << std::setw(20) << "-out"
 					  << "If this parameter is used, the oputput will be appended to the end of the specified file\n";
 
-			std::cout << std::left << std::setw(20) << "-ver [name]"
+			std::cout << std::left << std::setw(20) << "--var [name]"
 					  << "Specifies the name of the generated array.\n"
 					  << std::setw(20) << ""
 					  << "If this argument is not specified, the "
