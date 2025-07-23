@@ -8,14 +8,21 @@
 
 int main(int argc, char **argv) {
 	std::string varName = "arr";
-	for (int i = 0; i < argc; i++) {
+	std::string path;
+	std::string outFile;
+
+	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "--var") == 0) {
 			varName = argv[++i];
+		} else if (strcmp(argv[i], "-in") == 0) {
+			path = argv[++i];
+		} else if (strcmp(argv[i], "-out") == 0) {
+			outFile = argv[++i];
 		} else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
-			std::cout << std::left << std::setw(20) << "[bin] > [out]"
-					  << "May be used to write the generated array directly into a file\n";
-			std::cout << std::left << std::setw(20) << ""
-					  << "The input file must be the first parameter passed to the program.\n";
+			std::cout << std::left << std::setw(20) << "-in"
+					  << "Used to specify the binary input file\n";
+			std::cout << std::left << std::setw(20) << "-out"
+					  << "If this parameter is used, the oputput will be appended to the end of the specified file\n";
 
 			std::cout << std::left << std::setw(20) << "-ver [name]"
 					  << "Specifies the name of the generated array.\n"
@@ -32,14 +39,17 @@ int main(int argc, char **argv) {
 		} else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
 			std::cout << "md-keytoarr version 0.1\n";
 			return EXIT_SUCCESS;
+		} else {
+			std::cerr << "Unknown parameter " << argv[i] << "\n";
+			return EXIT_FAILURE;
 		}
 	}
 
-	if (argc < 2) {
-		std::cerr << "Invalid arguments\n";
+	if (path.empty()) {
+		std::cerr << "No input path specified\n";
 		return EXIT_FAILURE;
 	}
-	std::string path = argv[1];
+
 	if (!std::filesystem::exists(path)) {
 		std::cerr << "File " << path << " does not exist\n";
 		return EXIT_FAILURE;
@@ -49,26 +59,12 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-	std::string outFile;
-
-	if (argc > 3) {
-		if (strcmp(argv[2], ">") == 0) { outFile = argv[3]; }
-		if (!std::filesystem::exists(outFile)) {
-			std::cerr << "File " << outFile << " does not exist\n";
-			return EXIT_FAILURE;
-		}
-		if (!std::filesystem::is_regular_file(outFile)) {
-			std::cerr << outFile << " is not a file\n";
-			return EXIT_FAILURE;
-		}
-	}
-
 	uint8_t *key;
 	std::ifstream keyFile(path, std::ios::binary | std::ios::ate);
 	size_t fileSz = keyFile.tellg();
 	keyFile.seekg(0);
 	key = new uint8_t[fileSz];
-	keyFile.read((char *) key, 32);
+	keyFile.read((char *) key, fileSz);
 
 	if (outFile.empty()) {
 		std::cout << "static const uint8_t " << varName << "[" << fileSz << "] = {";
@@ -82,12 +78,12 @@ int main(int argc, char **argv) {
 		delete[] key;
 		return EXIT_SUCCESS;
 	} else {
-		std::ofstream hdr(outFile, std::ios::ate);
+		std::ofstream hdr(outFile, std::ios::app);
 		hdr << "static const uint8_t " << varName << "[" << fileSz << "] = {";
 
 		for (int i = 0; i < fileSz; i++) {
 			if ((i % 8) == 0) { hdr << "\n\t"; }
-			std::cout << "0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(key[i]) << ", ";
+			hdr << "0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(key[i]) << ", ";
 		}
 
 		hdr << "\n};\n";

@@ -84,6 +84,9 @@ int main(int argc, char **argv) {
 			std::cout << "\nA -k and -f parameter must be passed in order for the program to be able to verify the "
 						 "signatures\n\n";
 
+			std::cout << std::left << std::setw(20) << "--objcopy"
+					  << "Specifies the objcopy command to use\n";
+
 			std::cout << std::left << std::setw(20) << "-v or --version"
 					  << "Prints the current version of the program\n";
 			std::cout << std::left << std::setw(20) << "-h or --help"
