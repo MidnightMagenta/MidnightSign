@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 			std::cout << "\nExample usage: md-keytoarr data.bin > array.h -ver binary_data\n\n";
 			return EXIT_SUCCESS;
 		} else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
-			std::cout << "md-keytoarr version 0.1\n";
+			std::cout << "md-keytoarr version " << VERSION << "\n";
 			return EXIT_SUCCESS;
 		} else {
 			std::cerr << "Unknown parameter " << argv[i] << "\n";

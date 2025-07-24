@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
 			std::cout << "\nExample usage: md-verify -k public.key -f executable.elf\n\n";
 			return EXIT_SUCCESS;
 		} else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
-			std::cout << "md-verify version 0.1\n";
+			std::cout << "md-verify version " << VERSION << "\n";
 			return EXIT_SUCCESS;
 		} else {
 			std::cerr << "Unknown argument: " << argv[i] << "\n";
